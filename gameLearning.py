@@ -1,4 +1,6 @@
 import random
+import os
+from time import sleep
 
 #Primary Gameplay function
 def play():
@@ -10,6 +12,7 @@ def play():
     item = getItem()
     print(f"Ah, a {item}, what an excellent choice!")
     print("Well buckle up! here comes your first challenge...")
+    clearAndContinue()
     
     #encounters will return truthy if they are completed and falsey if they are failed
     if getRandomEncounter(item, luck):
@@ -34,11 +37,18 @@ def getItem():
 def getRandomEncounter(item, luck):
     #hmmm... threading params. suss
     encounterOldMan(item, luck)
+    
+# keeps the console clear and readable.
+def clearAndContinue():
+    input("press enter to continue")
+    os.system('clear')
+    sleep(.25)
 
 def encounterOldMan(item, luck):
     modifier = luck + 0
     print("An old man in a bathrobe emerges from the shadows.")
     print("He wields a can of beans and a newspaper.")
+    clearAndContinue()
     if item == "Sword":
         print("Before he can react, you swing your sword, missing him entirely but cleanly opening his can of beans from the top")
         print("Satisfied, he leaves.")
