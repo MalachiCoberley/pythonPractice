@@ -16,7 +16,11 @@ def play():
     
     #encounters will return truthy if they are completed and falsey if they are failed
     if getRandomEncounter(item, luck):
+        clearAndContinue()
         print("wahoo")
+    else:
+        clearAndContinue()
+        print("oh no")
     
 def getItem():
     itemNumber = input("""Enter the number that corresponds with the item you want
@@ -36,7 +40,7 @@ def getItem():
 
 def getRandomEncounter(item, luck):
     #hmmm... threading params. suss
-    encounterOldMan(item, luck)
+    return encounterOldMan(item, luck)
     
 # keeps the console clear and readable.
 def clearAndContinue():
@@ -61,7 +65,7 @@ def encounterOldMan(item, luck):
         print(f"An echoing thud hits your ears and the old man explodes into a million pieces of old-man confetti as your {item} drives through him.")
         return True
     else:
-        print("Embarassingly, you miss and catch a can of beans to the back of the head.")
+        print("Embarrassingly, you miss and catch a can of beans to the back of the head.")
         return False
 
 #Start the game
