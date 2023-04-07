@@ -21,14 +21,6 @@ def generateMoves() -> list:
     return moves
 
 
-class Player:
-    def __init__(self) -> None:
-        self.team =[ Monster() for i in range(0, TEAM_SIZE) ]
-
-    def getTeam(self) -> list:
-        return self.team
-
-    
 class Monster:
     def __init__(self) -> None:
         self.name = input("What is my name? \n")
@@ -52,7 +44,20 @@ class Monster:
               Moves: {self.moves[0].showStats()} / {self.moves[1].showStats()}
               """)
 
-#
+class Player:
+    def __init__(self) -> None:
+        self.team =[ Monster() for i in range(0, TEAM_SIZE) ]
+        self.activeMon = None
+
+    def getTeam(self) -> list:
+        return self.team
+    
+    def chooseActiveMon(self, idx = 0) -> Monster:
+        print(f"Go, {self.team[idx]}!")
+        self.activeMon = self.team[idx]
+        return self.activeMon
+
+
 class Move:
     def __init__(self, name, power, priority, effect = None) -> None:
         self.name = name
@@ -69,8 +74,12 @@ class Game:
         self.player1 = Player()
         self.player2 = Player()
     
+    def play(self) -> None:
+        self.player1.chooseActiveMon()
+        self.player2.chooseActiveMon()
+        pass
 
-#confirmed. this approach is dumb and runtime gets fucky. 
+#confirmed. this approach is dumb and makes this too brittle. 
 ALL_MOVES = generateMoves()
 
 game = Game()
