@@ -44,6 +44,10 @@ class Monster:
               Moves: {self.moves[0].showStats()} / {self.moves[1].showStats()}
               """)
 
+    def useMove(self, idx) -> tuple:
+        outgoingDamage = self.moves[idx].power
+        effect = ''
+        return (outgoingDamage, effect)
 class Player:
     def __init__(self) -> None:
         self.team =[ Monster() for i in range(0, TEAM_SIZE) ]
@@ -77,6 +81,10 @@ class Game:
     def play(self) -> None:
         self.player1.chooseActiveMon()
         self.player2.chooseActiveMon()
+        # until no active mon, repeat turn method: print option to switch dudes or attack.
+        # switch uses the choseActiveMon method, or else battle method.
+        # end of turn faint/status check
+        # check for end of game condition and switch active player.
         pass
 
 #confirmed. this approach is dumb and makes this too brittle. 
