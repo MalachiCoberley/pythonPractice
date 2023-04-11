@@ -8,7 +8,7 @@ ATTACK_TYPES = ['Standard', 'Strong', 'Quick', 'Stun', 'Hit and Run', 'Poison', 
 TEAM_SIZE = 3
 
 #input util function
-def getInt(prompt: str, error_message: str = "") -> int:
+def getInput(prompt: str, error_message: str = "") -> int:
     while True:
         try:
             return int(input(prompt))
@@ -16,7 +16,7 @@ def getInt(prompt: str, error_message: str = "") -> int:
             print(error_message)
 
 
-#This approach to handling moves may be dumb.... we will see.
+#Moves need to be generated before the game starts. May just want to hard-code this better.
 def generateMoves() -> list:
     moves = []
     moves.append(Move(ATTACK_TYPES[0], 20, 1))
@@ -56,6 +56,17 @@ class Monster:
         outgoingDamage = self.moves[idx].power
         effect = ''
         return (outgoingDamage, effect)
+    
+    def receiveDamage(self, damage, effect) -> None:
+        #TODO add logic for calculating damage
+        pass
+    
+    def displayMoves(self) -> str:
+        return f"""
+                1.) {self.moves[0].showStats()}
+                2.) {self.moves[1].showStats()}
+                """
+    
 class Player:
     def __init__(self) -> None:
         self.team =[ Monster() for i in range(0, TEAM_SIZE) ]
@@ -91,7 +102,8 @@ class Game:
     def __init__(self) -> None:
         self.player1 = Player()
         self.player2 = Player()
-        self.activePlayer = self.player1
+        #turnOrder tuple manages play order. index 0 is the active player. need a better name i think
+        self.turnOrder = (self.player1, self.player2)
     
     def play(self) -> None:
         self.player1.chooseActiveMon()
@@ -100,30 +112,26 @@ class Game:
             self.playTurn()
             self.statusCheck()
             
-            if self.activePlayer is self.player1:
-                self.activePlayer = self.player2
-            else:
-                self.activePlayer = self.player1
+            self.turnOrder[0], self.turnOrder[1] = self.turnOrder[1], self.turnOrder[0]
                 
-        # until no active mon, repeat turn method: print option to switch dudes or attack.
-        # switch uses the choseActiveMon method, or else battle method.
-        # end of turn faint/status check
-        # check for end of game condition and switch active player.
     def playTurn(self) -> None:
         if self.displayTurnPrompt() == 1:
-            self.activePlayer
+            getInput(self.turnOrder[0].activeMon.displayMoves(), "Command must be a number")
         else:
+            #TODO: add logic for switching
             pass
     
     def statusCheck(self) -> None:
+        #TODO: add logic for effect triggering/resolution
         pass
 
     def displayTurnPrompt(self) -> int:
-        getInt("""
+        getInput("""
                1.) Attack
                2.) Switch
                """, "Command must be a number")
-#confirmed. this approach is dumb and makes this too brittle. 
+               
+#Moves need to be generated before the game starts. May just want to hard-code this better.
 ALL_MOVES = generateMoves()
 
 game = Game()
