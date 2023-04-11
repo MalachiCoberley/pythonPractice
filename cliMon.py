@@ -127,7 +127,7 @@ class Game:
         pass
 
     def displayTurnPrompt(self) -> int:
-        getInput("""
+        return getInput("""
                1.) Attack
                2.) Switch
                """, "Command must be a number")
