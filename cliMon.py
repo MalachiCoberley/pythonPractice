@@ -65,6 +65,7 @@ class Monster:
         return f"""
                 1.) {self.moves[0].showStats()}
                 2.) {self.moves[1].showStats()}
+    
                 """
     
 class Player:
@@ -102,8 +103,8 @@ class Game:
     def __init__(self) -> None:
         self.player1 = Player()
         self.player2 = Player()
-        #turnOrder tuple manages play order. index 0 is the active player. need a better name i think
-        self.turnOrder = (self.player1, self.player2)
+        #turnOrder list manages play order. index 0 is the active player. need a better name i think
+        self.turnOrder = [self.player1, self.player2]
     
     def play(self) -> None:
         self.player1.chooseActiveMon()
