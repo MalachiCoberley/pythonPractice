@@ -7,6 +7,14 @@ EFFECTS = ['Inaction', 'Switch', 'Drain', 'Swap']
 ATTACK_TYPES = ['Standard', 'Strong', 'Quick', 'Stun', 'Hit and Run', 'Poison', 'Scare']
 TEAM_SIZE = 3
 
+#input util function
+def getInt(prompt: str, error_message: str = "") -> int:
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print(error_message)
+
 
 #This approach to handling moves may be dumb.... we will see.
 def generateMoves() -> list:
@@ -57,9 +65,15 @@ class Player:
         return self.team
     
     def chooseActiveMon(self, idx = 0) -> Monster:
-        print(f"Go, {self.team[idx]}!")
+        print(f"Go, {self.team[idx].name}!")
         self.activeMon = self.team[idx]
         return self.activeMon
+    
+    def hasLivingMon(self) -> bool:
+        for mon in self.team:
+            if mon.currentHp > 0:
+                return True
+        return False
 
 
 class Move:
@@ -77,21 +91,40 @@ class Game:
     def __init__(self) -> None:
         self.player1 = Player()
         self.player2 = Player()
+        self.activePlayer = self.player1
     
     def play(self) -> None:
         self.player1.chooseActiveMon()
         self.player2.chooseActiveMon()
+        while self.player1.hasLivingMon() and self.player2.hasLivingMon():
+            self.playTurn()
+            self.statusCheck()
+            
+            if self.activePlayer is self.player1:
+                self.activePlayer = self.player2
+            else:
+                self.activePlayer = self.player1
+                
         # until no active mon, repeat turn method: print option to switch dudes or attack.
         # switch uses the choseActiveMon method, or else battle method.
         # end of turn faint/status check
         # check for end of game condition and switch active player.
+    def playTurn(self) -> None:
+        if self.displayTurnPrompt() == 1:
+            self.activePlayer
+        else:
+            pass
+    
+    def statusCheck(self) -> None:
         pass
 
+    def displayTurnPrompt(self) -> int:
+        getInt("""
+               1.) Attack
+               2.) Switch
+               """, "Command must be a number")
 #confirmed. this approach is dumb and makes this too brittle. 
 ALL_MOVES = generateMoves()
 
 game = Game()
-for monster in game.player1.getTeam():
-    print(monster.showStats())
-for monster in game.player2.getTeam():
-    print(monster.showStats())
+game.play()
