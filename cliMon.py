@@ -47,6 +47,10 @@ class Monster:
         print(self.moves)
         return self.type
     
+    def isFainted(self):
+        print(f"{self.name} fainted. Send out another PyCliMon")
+        self.currentHp = 0
+    
     def showStats(self):
         print(f"""
               Name: {self.name}
@@ -57,16 +61,20 @@ class Monster:
               """)
 
     def useMove(self, moveNum) -> tuple:
-        #The selected move will be 1 more than the index... ux over code simplicity
-        outgoingDamage = self.moves[moveNum - 1].power
-        #TODO: add effect logic
-        effect = ''
-        return (outgoingDamage, effect)
+        moveIdx = moveNum - 1
+        outgoingDamage = self.moves[moveIdx].power
+        return (outgoingDamage, self.type, self.moves[moveIdx].effect)
     
     def receiveDamage(self, attack) -> None:
-        actualDamage = attack[0] - self.defense
+        incomingDamage, attackType, effect = attack
+        actualDamage = incomingDamage - self.defense
+        
+        if self.hasTypeAdvantage(attackType):
+            actualDamage *= 2
+            print("super effective")
+            
         self.currentHp -= actualDamage
-        #TODO: add effect logic and factor in monster type
+        #TODO: add effect logi
         pass
     
     def displayMoves(self) -> str:
@@ -75,6 +83,17 @@ class Monster:
                 2.) {self.moves[1].showStats()}
     
                 """
+    def hasTypeAdvantage(self, moveType):
+        if self.type == TYPES[0]: #rock
+            if moveType == TYPES[1]:
+                return True
+        elif self.type == TYPES[1]: #paper
+            if moveType == TYPES[2]:
+                return True
+        elif self.type == TYPES[2]:
+            if moveType == TYPES[0]:
+                return True
+        return False
     
 class Player:
     def __init__(self) -> None:
@@ -84,10 +103,10 @@ class Player:
     def getTeam(self) -> list:
         return self.team
     
-    def chooseActiveMon(self, idx = 1) -> Monster:
-        trueIdx = idx - 1
-        print(f"Go, {self.team[trueIdx].name}!")
-        self.activeMon = self.team[trueIdx]
+    def chooseActiveMon(self, monNum = 1) -> Monster:
+        monIdx = monNum - 1
+        print(f"Go, {self.team[monIdx].name}!")
+        self.activeMon = self.team[monIdx]
         return self.activeMon
     
     def displayTeam(self) -> str:
@@ -140,8 +159,10 @@ class Game:
             #TODO: delete this print guy in favor of a real render battle details thing
             print(self.turnOrder[1].activeMon.currentHp)
             if self.player1.activeMon.currentHp <= 0:
+                self.player1.activeMon.isFainted()
                 self.player1.chooseActiveMon(getInput(self.player1.displayTeam(), "i need real error handling"))
             elif self.player2.activeMon.currentHp <= 0:
+                self.player2.activeMon.isFainted()
                 self.player2.chooseActiveMon(getInput(self.player2.displayTeam(), "i need real error handling"))
         else:
             self.turnOrder[0].chooseActiveMon(getInput(self.turnOrder[0].displayTeam(), "i need real error handling"))
