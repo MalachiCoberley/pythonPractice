@@ -79,9 +79,9 @@ class Monster:
     
     def displayMoves(self) -> str:
         return f"""
-                1.) {self.moves[0].showStats()}
-                2.) {self.moves[1].showStats()}
-    
+    1.) {self.moves[0].showStats()}
+    2.) {self.moves[1].showStats()}
+
                 """
     def hasTypeAdvantage(self, moveType):
         if self.type == TYPES[0]: #rock
@@ -96,7 +96,8 @@ class Monster:
         return False
     
 class Player:
-    def __init__(self) -> None:
+    def __init__(self, name) -> None:
+        self.name = name
         self.team =[ Monster() for i in range(0, TEAM_SIZE) ]
         self.activeMon = None
 
@@ -111,9 +112,9 @@ class Player:
     
     def displayTeam(self) -> str:
         return f"""
-        1.) {self.team[0].name}:{self.team[0].type} - {self.team[0].currentHp}
-        2.) {self.team[1].name}:{self.team[1].type} - {self.team[1].currentHp}
-        3.) {self.team[2].name}:{self.team[2].type} - {self.team[2].currentHp}
+1.) {self.team[0].name}:{self.team[0].type} - {self.team[0].currentHp}
+2.) {self.team[1].name}:{self.team[1].type} - {self.team[1].currentHp}
+3.) {self.team[2].name}:{self.team[2].type} - {self.team[2].currentHp}
         """
     
     def hasLivingMon(self) -> bool:
@@ -136,8 +137,8 @@ class Move:
 
 class Game:
     def __init__(self) -> None:
-        self.player1 = Player()
-        self.player2 = Player()
+        self.player1 = Player("Player 1")
+        self.player2 = Player("Player 2")
         #turnOrder list manages play order. index 0 is the active player. need a better name i think
         self.turnOrder = [self.player1, self.player2]
     
@@ -145,6 +146,7 @@ class Game:
         self.player1.chooseActiveMon()
         self.player2.chooseActiveMon()
         while self.player1.hasLivingMon() and self.player2.hasLivingMon():
+            self.displayBattleStats()
             self.playTurn()
             self.statusCheck()
             
@@ -174,10 +176,45 @@ class Game:
 
     def displayTurnPrompt(self) -> int:
         return getInput("""
-               1.) Attack
-               2.) Switch
+1.) Attack
+2.) Switch
                """, "Command must be a number")
                
+    def displayBattleStats(self) -> None:
+        p1teamIcons = ""
+        p2teamIcons = ""
+        for mon in self.player1.team:
+            if (mon.currentHp < mon.baseHp) and (mon.currentHp > 0):
+                p1teamIcons += ("▲ ")
+            elif mon.currentHp == mon.baseHp:
+                p1teamIcons += ("■ ")
+            else:
+                p1teamIcons += ("- ")
+        for mon in self.player2.team:
+            if (mon.currentHp < mon.baseHp) and (mon.currentHp > 0):
+                p2teamIcons += ("▲ ")
+            elif mon.currentHp == mon.baseHp:
+                p2teamIcons += ("■ ")
+            else:
+                p2teamIcons += ("- ")
+        
+        print(f"""
+     {self.player1.name}
+     {p1teamIcons}
+     {self.player1.activeMon.name}: {self.player1.activeMon.type}
+     HP: {self.player1.activeMon.currentHp}/{self.player1.activeMon.baseHp}
+     |
+     -----------------------------------------------
+     |
+     {self.player2.name}
+     {p2teamIcons}
+     {self.player2.activeMon.name}: {self.player2.activeMon.type}
+     HP: {self.player2.activeMon.currentHp}/{self.player2.activeMon.baseHp}
+              """
+            )
+
+            
+              
 #Moves need to be generated before the game starts. May just want to hard-code this better.
 ALL_MOVES = generateMoves()
 
