@@ -52,13 +52,17 @@ class Monster:
               Moves: {self.moves[0].showStats()} / {self.moves[1].showStats()}
               """)
 
-    def useMove(self, idx) -> tuple:
-        outgoingDamage = self.moves[idx].power
+    def useMove(self, moveNum) -> tuple:
+        #The selected move will be 1 more than the index... ux over code simplicity
+        outgoingDamage = self.moves[moveNum - 1].power
+        #TODO: add effect logic
         effect = ''
         return (outgoingDamage, effect)
     
-    def receiveDamage(self, damage, effect) -> None:
-        #TODO add logic for calculating damage
+    def receiveDamage(self, attack) -> None:
+        actualDamage = attack[0] - self.defense
+        self.currentHp -= actualDamage
+        #TODO: add effect logic and factor in monster type
         pass
     
     def displayMoves(self) -> str:
@@ -117,7 +121,11 @@ class Game:
                 
     def playTurn(self) -> None:
         if self.displayTurnPrompt() == 1:
-            getInput(self.turnOrder[0].activeMon.displayMoves(), "Command must be a number")
+            #select a move
+            attack = getInput(self.turnOrder[0].activeMon.displayMoves(), "Command must be a number")
+            #calc outgoing damage and apply incoming
+            self.turnOrder[1].activeMon.receiveDamage(self.turnOrder[0].activeMon.useMove(attack))
+            print(self.turnOrder[1].activeMon.currentHp)
         else:
             #TODO: add logic for switching
             pass
