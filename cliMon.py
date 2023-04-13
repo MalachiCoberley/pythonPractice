@@ -85,6 +85,13 @@ class Player:
         self.activeMon = self.team[idx]
         return self.activeMon
     
+    def displayTeam(self) -> str:
+        return f"""
+        1.) {self.team[0].name}:{self.team[0].type} - {self.team[0].currentHp}
+        2.) {self.team[1].name}:{self.team[1].type} - {self.team[1].currentHp}
+        3.) {self.team[2].name}:{self.team[2].type} - {self.team[2].currentHp}
+        """
+    
     def hasLivingMon(self) -> bool:
         for mon in self.team:
             if mon.currentHp > 0:
@@ -125,7 +132,12 @@ class Game:
             attack = getInput(self.turnOrder[0].activeMon.displayMoves(), "Command must be a number")
             #calc outgoing damage and apply incoming
             self.turnOrder[1].activeMon.receiveDamage(self.turnOrder[0].activeMon.useMove(attack))
+            #TODO: delete this print guy in favor of a real render battle details thing
             print(self.turnOrder[1].activeMon.currentHp)
+            if self.player1.activeMon.currentHp <= 0:
+                self.player1.chooseActiveMon(getInput(self.player1.displayTeam(), "i need real error handling"))
+            elif self.player2.activeMon.currentHp <= 0:
+                self.player2.chooseActiveMon(getInput(self.player2.displayTeam(), "i need real error handling"))
         else:
             #TODO: add logic for switching
             pass
