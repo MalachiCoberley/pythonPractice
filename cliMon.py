@@ -28,6 +28,10 @@ def generateMoves() -> list:
     moves.append(Move(ATTACK_TYPES[6], 10, 1, EFFECTS[3]))
     return moves
 
+#
+# prompts are 1 indexed but lists are all 0 indexed. Maybe a function should explicitly do the -1 with
+# specific inputs
+#
 
 class Monster:
     def __init__(self) -> None:
@@ -80,9 +84,10 @@ class Player:
     def getTeam(self) -> list:
         return self.team
     
-    def chooseActiveMon(self, idx = 0) -> Monster:
-        print(f"Go, {self.team[idx].name}!")
-        self.activeMon = self.team[idx]
+    def chooseActiveMon(self, idx = 1) -> Monster:
+        trueIdx = idx - 1
+        print(f"Go, {self.team[trueIdx].name}!")
+        self.activeMon = self.team[trueIdx]
         return self.activeMon
     
     def displayTeam(self) -> str:
@@ -139,8 +144,8 @@ class Game:
             elif self.player2.activeMon.currentHp <= 0:
                 self.player2.chooseActiveMon(getInput(self.player2.displayTeam(), "i need real error handling"))
         else:
-            #TODO: add logic for switching
-            pass
+            self.turnOrder[0].chooseActiveMon(getInput(self.turnOrder[0].displayTeam(), "i need real error handling"))
+            
     
     def statusCheck(self) -> None:
         #TODO: add logic for effect triggering/resolution
