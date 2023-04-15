@@ -38,10 +38,11 @@ class Monster:
         self.name = input("What is my name? \n")
         self.baseHp = random.randint(100, 200)
         self.currentHp = self.baseHp * 1
+        self.currentEffect = None
         self.attack = random.randint(5, 15)
         self.defense = random.randint(5, 15)
         self.type = TYPES[random.randint(0,2)]
-        self.moves = [ALL_MOVES[random.randint(0,2)], ALL_MOVES[random.randint(3,6)]]
+        self.moves = [ALL_MOVES[random.randint(0,2)], ALL_MOVES[5]]
 
     def getType(self):
         print(self.moves)
@@ -67,15 +68,21 @@ class Monster:
     
     def receiveDamage(self, attack) -> None:
         incomingDamage, attackType, effect = attack
-        actualDamage = incomingDamage - self.defense
+        actualDamage = incomingDamage - round(self.defense/2)
         
         if self.hasTypeAdvantage(attackType):
             actualDamage *= 2
             print("super effective")
             
         self.currentHp -= actualDamage
-        #TODO: add effect logi
-        pass
+        
+        #after applying damage, faint dude if no Hp remaining, otherwise apply effect if it exists
+        if self.currentHp <= 0:
+            self.isFainted()
+        elif effect != None:
+            self.currentEffect = effect
+            
+        
     
     def displayMoves(self) -> str:
         return f"""
@@ -153,26 +160,40 @@ class Game:
             self.turnOrder[0], self.turnOrder[1] = self.turnOrder[1], self.turnOrder[0]
                 
     def playTurn(self) -> None:
+        #TODO: allow players to back out of menu with like 3 or something.
         if self.displayTurnPrompt() == 1:
             #select a move
             attack = getInput(self.turnOrder[0].activeMon.displayMoves(), "Command must be a number")
             #calc outgoing damage and apply incoming
             self.turnOrder[1].activeMon.receiveDamage(self.turnOrder[0].activeMon.useMove(attack))
-            #TODO: delete this print guy in favor of a real render battle details thing
-            print(self.turnOrder[1].activeMon.currentHp)
             if self.player1.activeMon.currentHp <= 0:
-                self.player1.activeMon.isFainted()
                 self.player1.chooseActiveMon(getInput(self.player1.displayTeam(), "i need real error handling"))
             elif self.player2.activeMon.currentHp <= 0:
-                self.player2.activeMon.isFainted()
                 self.player2.chooseActiveMon(getInput(self.player2.displayTeam(), "i need real error handling"))
         else:
             self.turnOrder[0].chooseActiveMon(getInput(self.turnOrder[0].displayTeam(), "i need real error handling"))
             
     
     def statusCheck(self) -> None:
-        #TODO: add logic for effect triggering/resolution
-        pass
+        #TODO: finish logic for effect triggering/resolution
+        activeMon = self.turnOrder[0].activeMon
+        if activeMon.currentEffect == EFFECTS[0]: #inaction
+            pass
+        elif activeMon.currentEffect == EFFECTS[1]: #switch
+            pass
+        elif activeMon.currentEffect == EFFECTS[2]: #drain
+            #TODO: Maybe make the damage number less magical
+                #also shouldn't need redundant hp < 0 checks. need a more robust damage check
+            drainDamage = round(activeMon.baseHp/12)
+            resolveChance = 25
+            activeMon.currentHp -= drainDamage
+            if activeMon.currentHp <= 0:
+                activeMon.isFainted()
+            print("Poison damage. owwwy")
+            if random.randint(1,100) <= resolveChance:
+                activeMon.currentEffect = None
+        elif activeMon.currentEffect == EFFECTS[3]: #swap
+            pass
 
     def displayTurnPrompt(self) -> int:
         return getInput("""
@@ -197,15 +218,16 @@ class Game:
                 p2teamIcons += ("■ ")
             else:
                 p2teamIcons += ("- ")
-        
+        #TODO: This should use turnOrder instead of player1/player2.
+            #active player should be offset from inactive for readability
         print(f"""
-     {self.player1.name}
-     {p1teamIcons}
-     {self.player1.activeMon.name}: {self.player1.activeMon.type}
-     HP: {self.player1.activeMon.currentHp}/{self.player1.activeMon.baseHp}
-     |
-     -----------------------------------------------
-     |
+              {self.player1.name}
+              {p1teamIcons}
+              {self.player1.activeMon.name}: {self.player1.activeMon.type}
+              HP: {self.player1.activeMon.currentHp}/{self.player1.activeMon.baseHp}
+     
+          -----------------------------------------------
+     
      {self.player2.name}
      {p2teamIcons}
      {self.player2.activeMon.name}: {self.player2.activeMon.type}
