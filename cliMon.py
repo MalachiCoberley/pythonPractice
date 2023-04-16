@@ -225,18 +225,25 @@ class Game:
                 activeTeamIcons += ("■ ")
             else:
                 activeTeamIcons += ("- ")
+        defendingMonHealth = ""
+        activeMonHealth = ""       
+        for i in range(round(self.turnOrder[0].activeMon.currentHp / 5)):
+            activeMonHealth += "="
+        for i in range(round(self.turnOrder[1].activeMon.currentHp / 5)):
+            defendingMonHealth += "="
+        
         print(f"""
               {self.turnOrder[1].name}
               {defendingTeamIcons}
               {self.turnOrder[1].activeMon.name}: {self.turnOrder[1].activeMon.type}
-              HP: {self.turnOrder[1].activeMon.currentHp}/{self.turnOrder[1].activeMon.baseHp}
+              HP: {self.turnOrder[1].activeMon.currentHp}/{self.turnOrder[1].activeMon.baseHp} {defendingMonHealth}
      
-          -----------------------------------------------
+          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
      
      {self.turnOrder[0].name}
      {activeTeamIcons}
      {self.turnOrder[0].activeMon.name}: {self.turnOrder[0].activeMon.type}
-     HP: {self.turnOrder[0].activeMon.currentHp}/{self.turnOrder[0].activeMon.baseHp}
+     HP: {self.turnOrder[0].activeMon.currentHp}/{self.turnOrder[0].activeMon.baseHp} {activeMonHealth}
               """
             )
 
