@@ -17,6 +17,8 @@ def getInput(prompt: str, error_message: str = "") -> int:
 
 
 #Moves need to be generated before the game starts. May just want to hard-code this better.
+    #TODO: priority was a dumb idea and doesn't even work with the way i implemented turns, 
+        # should maybe have a pen vs. power dynamic with non effect moves.
 def generateMoves() -> list:
     moves = []
     moves.append(Move(ATTACK_TYPES[0], 20, 1))
@@ -130,7 +132,6 @@ class Player:
                 return True
         return False
 
-
 class Move:
     def __init__(self, name, power, priority, effect = None) -> None:
         self.name = name
@@ -158,6 +159,12 @@ class Game:
             self.statusCheck()
             
             self.turnOrder[0], self.turnOrder[1] = self.turnOrder[1], self.turnOrder[0]
+        if self.player1.hasLivingMon():
+            print("Player 1 Wins!")
+        elif self.player2.hasLivingMon():
+            print("Player 2 Wins!")
+        else:
+            print("Lol, how did you tie?!?!")
                 
     def playTurn(self) -> None:
         #TODO: allow players to back out of menu with like 3 or something.
