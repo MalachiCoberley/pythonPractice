@@ -42,7 +42,7 @@ class Monster:
         self.attack = random.randint(5, 15)
         self.defense = random.randint(5, 15)
         self.type = TYPES[random.randint(0,2)]
-        self.moves = [ALL_MOVES[random.randint(0,2)], ALL_MOVES[5]]
+        self.moves = [ALL_MOVES[random.randint(0,2)], ALL_MOVES[random.randint(3,6)]]
 
     def getType(self):
         print(self.moves)
@@ -202,36 +202,34 @@ class Game:
                """, "Command must be a number")
                
     def displayBattleStats(self) -> None:
-        p1teamIcons = ""
-        p2teamIcons = ""
-        for mon in self.player1.team:
+        defendingTeamIcons = ""
+        activeTeamIcons = ""
+        for mon in self.turnOrder[1].team:
             if (mon.currentHp < mon.baseHp) and (mon.currentHp > 0):
-                p1teamIcons += ("▲ ")
+                defendingTeamIcons += ("▲ ")
             elif mon.currentHp == mon.baseHp:
-                p1teamIcons += ("■ ")
+                defendingTeamIcons += ("■ ")
             else:
-                p1teamIcons += ("- ")
-        for mon in self.player2.team:
+                defendingTeamIcons += ("- ")
+        for mon in self.turnOrder[0].team:
             if (mon.currentHp < mon.baseHp) and (mon.currentHp > 0):
-                p2teamIcons += ("▲ ")
+                activeTeamIcons += ("▲ ")
             elif mon.currentHp == mon.baseHp:
-                p2teamIcons += ("■ ")
+                activeTeamIcons += ("■ ")
             else:
-                p2teamIcons += ("- ")
-        #TODO: This should use turnOrder instead of player1/player2.
-            #active player should be offset from inactive for readability
+                activeTeamIcons += ("- ")
         print(f"""
-              {self.player1.name}
-              {p1teamIcons}
-              {self.player1.activeMon.name}: {self.player1.activeMon.type}
-              HP: {self.player1.activeMon.currentHp}/{self.player1.activeMon.baseHp}
+              {self.turnOrder[1].name}
+              {defendingTeamIcons}
+              {self.turnOrder[1].activeMon.name}: {self.turnOrder[1].activeMon.type}
+              HP: {self.turnOrder[1].activeMon.currentHp}/{self.turnOrder[1].activeMon.baseHp}
      
           -----------------------------------------------
      
-     {self.player2.name}
-     {p2teamIcons}
-     {self.player2.activeMon.name}: {self.player2.activeMon.type}
-     HP: {self.player2.activeMon.currentHp}/{self.player2.activeMon.baseHp}
+     {self.turnOrder[0].name}
+     {activeTeamIcons}
+     {self.turnOrder[0].activeMon.name}: {self.turnOrder[0].activeMon.type}
+     HP: {self.turnOrder[0].activeMon.currentHp}/{self.turnOrder[0].activeMon.baseHp}
               """
             )
 
