@@ -1,11 +1,3 @@
-###
-### README:
-# To play, you need to create a csv with two columns
-# "Words" and "Best Time"
-# The words column should be populated by you.
-# Validation takes place for the entire column, so you can use whole sentences or single words
-###
-
 import pandas as pd
 import random
 import time
