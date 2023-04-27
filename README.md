@@ -1,4 +1,4 @@
-### I'm just practicing python by making a shitty text adventure.
+### I'm just practicing python by making cli toys.
  
 # cliMon
 A really basic CLI pokemon clone. it's maybe too random to be practical, but it is mostly a game.
