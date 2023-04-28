@@ -1,10 +1,15 @@
 #ya boi plays too much brawlstars, so i'm going to practice with the API.
 
-import urllib3
 import json
+#DB Connection
+import sqlite3
 
+import urllib3
 from api_keys import TEST_API_TOKEN
 from brawl_utils import calculate_showdown_result, is_showdown
+
+con = sqlite3.connect("brawl.db")
+cur = con.cursor()
 
 MAL_URL = '%2328RP22UYC'
 MAL_PLAIN = '#28RP22UYC'
@@ -56,6 +61,15 @@ for match in jason['items']:
                         if player["tag"] == MAL_PLAIN:
                             brawler = player['brawler']['name']
     print(timestamp, " : ",game_mode, " : ",result, " : ",star_player, " : ",brawler)
+    #write to Sqlite DB
+    data = (timestamp, MAL_PLAIN,'SleezyP',brawler,game_mode,result,star_player)
+    try:
+        cur.execute("INSERT INTO matches VALUES(?,?,?,?,?,?,?)", data)
+        con.commit()
+        print("match logged")
+    except:
+        print("already written")
+        pass
 
 
 
