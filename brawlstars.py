@@ -26,6 +26,16 @@ for match in jason['items']:
     brawler = ""
     if is_showdown(game_mode):
         result = calculate_showdown_result(game_mode, match['battle']['rank'])
+        if game_mode == "soloShowdown":
+            for player in match['battle']['players']:
+                if player["tag"] == MAL_PLAIN:
+                            brawler = player['brawler']['name']
+        else:
+            while brawler == "":
+                for team in match['battle']['teams']:
+                    for player in team:
+                        if player["tag"] == MAL_PLAIN:
+                            brawler = player['brawler']['name']
     else:
         result = match['battle']['result']
         if match['battle']['starPlayer']['tag'] == MAL_PLAIN:
