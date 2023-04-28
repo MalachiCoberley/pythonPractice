@@ -18,6 +18,9 @@ url = f'https://api.brawlstars.com/v1/players/{MAL_URL}/battlelog'
 
 resp = http.request('GET', url, headers=headers)
 jason = json.loads(resp.data)
+
+#iterate through each match to fetch needed info
+#TODO: may need to account for other non-standard matches like duel and weekend-only modes.
 for match in jason['items']:
     timestamp = match['battleTime']
     game_mode = match['battle']['mode']
@@ -49,15 +52,6 @@ for match in jason['items']:
                             brawler = player['brawler']['name']
     print(timestamp, " : ",game_mode, " : ",result, " : ",star_player, " : ",brawler)
 
-
-
-#Timestamp - items[idx].battleTime
-#playerTag - <passed in>
-#playerName - <passed in>
-#brawler - items[idx].battle.teams[idx].tag == <passed in tag>.brawler.name
-#gameMode - items[idx].battle.mode
-#result - items[idx].battle.result
-#starPlayer - items[idx].battle.starPlayer.tag == <passed in tag>
 
 
 #battleLogs.to_json('./temp.json')
