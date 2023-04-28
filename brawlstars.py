@@ -1,7 +1,6 @@
 #ya boi plays too much brawlstars, so i'm going to practice with the API.
 
 import urllib3
-import pandas
 import json
 
 from api_keys import TEST_API_TOKEN
@@ -20,7 +19,7 @@ resp = http.request('GET', url, headers=headers)
 jason = json.loads(resp.data)
 
 #iterate through each match to fetch needed info
-#TODO: may need to account for other non-standard matches like duel and weekend-only modes.
+#TODO: may need to account for other non-standard matches like weekend-only modes.
 for match in jason['items']:
     timestamp = match['battleTime']
     game_mode = match['battle']['mode']
@@ -39,6 +38,12 @@ for match in jason['items']:
                     for player in team:
                         if player["tag"] == MAL_PLAIN:
                             brawler = player['brawler']['name']
+    #For duels, I'm just grabbing the first brawler. The info for this mode kind of sucks.
+    elif game_mode == "duels":
+        result = match['battle']['result']
+        for player in match['battle']['players']:
+                if player["tag"] == MAL_PLAIN:
+                            brawler = player['brawlers'][0]['name']
     else:
         result = match['battle']['result']
         if match['battle']['starPlayer']['tag'] == MAL_PLAIN:
