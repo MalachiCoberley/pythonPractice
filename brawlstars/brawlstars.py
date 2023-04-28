@@ -51,15 +51,15 @@ for match in jason['items']:
                             brawler = player['brawlers'][0]['name']
     else:
         result = match['battle']['result']
-        if match['battle']['starPlayer']['tag'] == MAL_PLAIN:
+        if match['battle']['starPlayer'] == None:
+             pass
+        elif match['battle']['starPlayer']['tag'] == MAL_PLAIN:
             star_player = True
-            brawler = match['battle']['starPlayer']['brawler']['name']
-        else:
-            while brawler == "":
-                for team in match['battle']['teams']:
-                    for player in team:
-                        if player["tag"] == MAL_PLAIN:
-                            brawler = player['brawler']['name']
+        while brawler == "":
+            for team in match['battle']['teams']:
+                for player in team:
+                    if player["tag"] == MAL_PLAIN:
+                        brawler = player['brawler']['name']
     print(timestamp, " : ",game_mode, " : ",result, " : ",star_player, " : ",brawler)
     #write to Sqlite DB
     data = (timestamp, MAL_PLAIN,'SleezyP',brawler,game_mode,result,star_player)
