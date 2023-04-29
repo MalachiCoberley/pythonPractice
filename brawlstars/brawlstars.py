@@ -81,4 +81,4 @@ write_json_to_db(request_brawl_matches(CAL_URL),CAL_PLAIN,CAL_NAME)
 write_json_to_db(request_brawl_matches(MAL_URL),MAL_PLAIN,MAL_NAME)
 
 
-#battleLogs.to_json('./temp.json')
+con.close()
