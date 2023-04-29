@@ -18,6 +18,8 @@ CAL_URL = '%2320CL0P8C0'
 CAL_PLAIN = '#20CL0P8C0'
 CAL_NAME = 'OreganoSpindle'
 
+STUPID_WEEKEND_MATCHES = ['bigGame', 'roboRumble', 'bossFight']
+
 http = urllib3.PoolManager()
 headers = {'Authorization': f'Bearer {TEST_API_TOKEN}'}
 
@@ -31,50 +33,52 @@ def request_brawl_matches(player_url_tag):
 #TODO: may need to account for other non-standard matches like weekend-only modes.
 def write_json_to_db(jason, player_tag, player_name):
     for match in jason['items']:
-        timestamp = match['battleTime']
-        game_mode = match['battle']['mode']
-        result = ""
-        star_player = False
-        brawler = ""
-        if is_showdown(game_mode):
-            result = calculate_showdown_result(game_mode, match['battle']['rank'])
-            if game_mode == "soloShowdown":
+        #Skip over the record if it's a weekend mode
+        if match['battle']['mode'] in STUPID_WEEKEND_MATCHES:
+            pass
+        else:
+            timestamp = match['battleTime']
+            game_mode = match['battle']['mode']
+            result = ""
+            star_player = False
+            brawler = ""
+            if is_showdown(game_mode):
+                result = calculate_showdown_result(game_mode, match['battle']['rank'])
+                if game_mode == "soloShowdown":
+                    for player in match['battle']['players']:
+                        if player["tag"] == player_tag:
+                                    brawler = player['brawler']['name']
+                else:
+                    while brawler == "":
+                        for team in match['battle']['teams']:
+                            for player in team:
+                                if player["tag"] == player_tag:
+                                    brawler = player['brawler']['name']
+            #For duels, I'm just grabbing the first brawler. The info for this mode kind of sucks.
+            elif game_mode == "duels":
+                result = match['battle']['result']
                 for player in match['battle']['players']:
-                    if player["tag"] == player_tag:
-                                brawler = player['brawler']['name']
+                        if player["tag"] == player_tag:
+                                    brawler = player['brawlers'][0]['name']
             else:
+                result = match['battle']['result']
+                if match['battle']['starPlayer'] == None:
+                    pass
+                elif match['battle']['starPlayer']['tag'] == player_tag:
+                    star_player = True
                 while brawler == "":
                     for team in match['battle']['teams']:
                         for player in team:
                             if player["tag"] == player_tag:
                                 brawler = player['brawler']['name']
-        #For duels, I'm just grabbing the first brawler. The info for this mode kind of sucks.
-        elif game_mode == "duels":
-            result = match['battle']['result']
-            for player in match['battle']['players']:
-                    if player["tag"] == player_tag:
-                                brawler = player['brawlers'][0]['name']
-        else:
-            result = match['battle']['result']
-            if match['battle']['starPlayer'] == None:
+            #write to Sqlite DB
+            data = (timestamp,player_tag,player_name,brawler,game_mode,result,star_player)
+            try:
+                cur.execute("INSERT INTO matches VALUES(?,?,?,?,?,?,?)", data)
+                con.commit()
+                print(f"match logged for {player_name}")
+            except:
                 pass
-            elif match['battle']['starPlayer']['tag'] == player_tag:
-                star_player = True
-            while brawler == "":
-                for team in match['battle']['teams']:
-                    for player in team:
-                        if player["tag"] == player_tag:
-                            brawler = player['brawler']['name']
-        print(timestamp, " : ",game_mode, " : ",result, " : ",star_player, " : ",brawler)
-        #write to Sqlite DB
-        data = (timestamp,player_tag,player_name,brawler,game_mode,result,star_player)
-        try:
-            cur.execute("INSERT INTO matches VALUES(?,?,?,?,?,?,?)", data)
-            con.commit()
-            print("match logged")
-        except:
-            print("already written")
-            pass
 
 
 write_json_to_db(request_brawl_matches(CAL_URL),CAL_PLAIN,CAL_NAME)
