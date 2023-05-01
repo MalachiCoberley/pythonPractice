@@ -6,7 +6,7 @@ import sqlite3
 
 import urllib3
 from api_keys import TEST_API_TOKEN
-from brawl_utils import calculate_showdown_result, is_showdown
+from brawl_utils import calculate_showdown_result
 
 con = sqlite3.connect("brawl.db")
 cur = con.cursor()
