@@ -9,6 +9,9 @@ cur = con.cursor()
 """
 cur.execute("CREATE TABLE matches(timestamp, player_tag,player_name,brawler,game_mode,result,star_player, UNIQUE(timestamp,player_tag));")
 
-
+# enacted May-2-2023, records prior will have a zero power advantage regardless of actual stats.
+cur.execute("ALTER TABLE matches ADD COLUMN power_advantage integer default 0")
 """
 
+con.commit()
+con.close()

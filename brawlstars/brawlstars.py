@@ -6,7 +6,7 @@ import sqlite3
 
 import urllib3
 from api_keys import TEST_API_TOKEN
-from brawl_utils import calculate_showdown_result
+from brawl_utils import calculate_showdown_result, get_brawler_and_power_advantage
 
 con = sqlite3.connect("brawl.db")
 cur = con.cursor()
@@ -33,7 +33,7 @@ def request_brawl_matches(player_url_tag) -> json:
 def write_data_to_db(data_list) -> None:
     for data in data_list:
         try:
-            cur.execute("INSERT INTO matches VALUES(?,?,?,?,?,?,?)", data)
+            cur.execute("INSERT INTO matches VALUES(?,?,?,?,?,?,?,?)", data)
             con.commit()
             print(f"match logged for {data[2]}")
         except:
@@ -47,6 +47,7 @@ def extract_match_data(jason, player_tag, player_name) -> list:
         result = ""
         star_player = False
         brawler = ""
+        power_advantage = 0
         #Skip over the record if it's a weekend mode
         if game_mode in WEEKEND_GAME_MODES:
             pass
@@ -72,17 +73,14 @@ def extract_match_data(jason, player_tag, player_name) -> list:
                                     brawler = player['brawlers'][0]['name']
             else:
                 result = match['battle']['result']
+                #sometimes there are no star players?
                 if match['battle']['starPlayer'] == None:
                     pass
                 elif match['battle']['starPlayer']['tag'] == player_tag:
                     star_player = True
-                while brawler == "":
-                    for team in match['battle']['teams']:
-                        for player in team:
-                            if player["tag"] == player_tag:
-                                brawler = player['brawler']['name']
+                brawler, power_advantage = get_brawler_and_power_advantage(match['battle']['teams'], player_tag)
             #return data tuple for DB
-            data = (timestamp,player_tag,player_name,brawler,game_mode,result,star_player)
+            data = (timestamp,player_tag,player_name,brawler,game_mode,result,star_player, power_advantage)
             extracted_data.append(data)
     return extracted_data
 
