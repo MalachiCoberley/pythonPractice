@@ -1,3 +1,6 @@
+from dateutil import parser
+from datetime import timedelta, datetime
+
 def calculate_showdown_result(mode, rank):
     if mode == "duoShowdown":
         if rank < 3:
@@ -27,3 +30,10 @@ def get_brawler_and_power_advantage(teams, player_tag) -> tuple:
             total_team_power *= -1
         power_difference += total_team_power
     return (player_brawler, power_difference)
+
+def convert_utc_to_az_datetime(date_str) -> datetime:
+    date = parser.parse(date_str)
+    az_timezone_adjustment = timedelta(hours=7)
+    date -= az_timezone_adjustment
+    print(type(date))
+    return date
