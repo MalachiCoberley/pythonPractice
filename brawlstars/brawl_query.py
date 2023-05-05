@@ -35,6 +35,7 @@ def performance_over_time(con):
     brawler = 'BONNIE'
 
     results = pd.read_sql_query('Select * from matches where player_name = ? and brawler = ?', con, params=(player_name, brawler))
+    
     for idx, row in results.iterrows():
         print(convert_utc_to_az_datetime(row['timestamp']))
 

@@ -35,5 +35,4 @@ def convert_utc_to_az_datetime(date_str) -> datetime:
     date = parser.parse(date_str)
     az_timezone_adjustment = timedelta(hours=7)
     date -= az_timezone_adjustment
-    print(type(date))
     return date
