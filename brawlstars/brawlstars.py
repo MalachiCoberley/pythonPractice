@@ -80,7 +80,7 @@ def extract_match_data(jason, player_tag, player_name) -> list:
                     star_player = True
                 brawler, power_advantage = get_brawler_and_power_advantage(match['battle']['teams'], player_tag)
             #return data tuple for DB
-            data = (timestamp,player_tag,player_name,brawler,game_mode,result,star_player, power_advantage, match)
+            data = (timestamp,player_tag,player_name,brawler,game_mode,result,star_player, power_advantage, str(match))
             extracted_data.append(data)
     return extracted_data
 

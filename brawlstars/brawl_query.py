@@ -32,12 +32,16 @@ def performance_over_time(con):
     #player_name = input('What is your player name?')
     #brawler = input('What brawler do you want to view?').upper()
     player_name = 'SleezyP'
-    brawler = 'BONNIE'
+    brawler = 'ASH'
 
     results = pd.read_sql_query('Select * from matches where player_name = ? and brawler = ?', con, params=(player_name, brawler))
     
     for idx, row in results.iterrows():
         print(convert_utc_to_az_datetime(row['timestamp']))
 
-performance_over_time(con)
+# performance_over_time(con)
+
+cur.execute('Select brawl_dump from matches where player_name = "SleezyP" and brawler = "ASH" ')
+print(cur.fetchall())
+
 con.close()
