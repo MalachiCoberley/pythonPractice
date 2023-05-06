@@ -33,7 +33,7 @@ def request_brawl_matches(player_url_tag) -> json:
 def write_data_to_db(data_list) -> None:
     for data in data_list:
         try:
-            cur.execute("INSERT INTO matches VALUES(?,?,?,?,?,?,?,?)", data)
+            cur.execute("INSERT INTO matches VALUES(?,?,?,?,?,?,?,?,?)", data)
             con.commit()
             print(f"match logged for {data[2]}")
         except:
@@ -80,7 +80,7 @@ def extract_match_data(jason, player_tag, player_name) -> list:
                     star_player = True
                 brawler, power_advantage = get_brawler_and_power_advantage(match['battle']['teams'], player_tag)
             #return data tuple for DB
-            data = (timestamp,player_tag,player_name,brawler,game_mode,result,star_player, power_advantage)
+            data = (timestamp,player_tag,player_name,brawler,game_mode,result,star_player, power_advantage, match)
             extracted_data.append(data)
     return extracted_data
 
