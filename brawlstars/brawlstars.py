@@ -48,8 +48,8 @@ def extract_match_data(jason, player_tag, player_name) -> list:
         star_player = False
         brawler = ""
         power_advantage = 0
-        #Skip over the record if it's a weekend mode
-        if game_mode in WEEKEND_GAME_MODES:
+        #Skip over the record if it's a weekend mode or friendly match
+        if game_mode in WEEKEND_GAME_MODES or match['battle']['type'] == "friendly":
             pass
         #Otherwise extract game info and write the match to the DB
         else:
