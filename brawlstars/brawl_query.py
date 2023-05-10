@@ -17,6 +17,11 @@ brawler_stats_by_player = brawler_stats_by_player.replace(0,.01).fillna(0)
 brawler_stats_by_player.plot.barh(figsize=(20, 15), width=0.8)
 
 
+### FIND SOMETHING TO DO WITH WIN/LOSS RATIO QUERY ###
+#SELECT brawler, COUNT(CASE WHEN result = 'victory' THEN 1 END) / COUNT(CASE WHEN result = 'defeat' THEN 1 END) AS win_loss_ratio
+#FROM matches where player_name = "SleezyP"
+#GROUP BY brawler;
+
 
 ### Show Top 3 Brawlers Per Player ###
 # This version of sqlite doesn't seem to like window functions, so i'm just doing two separate queries
