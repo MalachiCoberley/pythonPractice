@@ -6,7 +6,7 @@ from time import sleep
 def play():
     life = 3
     luck = random.randint(0,3)
-    backpack = {}
+    backpack = {} #unused at the moment
     print("""Hello adventurer. Choose an item for your quest.
           """)
     item = getItem()
@@ -15,12 +15,14 @@ def play():
     clearAndContinue()
     
     #encounters will return truthy if they are completed and falsey if they are failed
-    if getRandomEncounter(item, luck):
-        clearAndContinue()
-        print("wahoo")
-    else:
-        clearAndContinue()
-        print("oh no")
+    while life > 0:
+        if getRandomEncounter(item, luck):
+            clearAndContinue()
+            print("wahoo")
+        else:
+            clearAndContinue()
+            print("oh no")
+    print("Oops, you died")
     
 def getItem():
     itemNumber = input("""Enter the number that corresponds with the item you want
