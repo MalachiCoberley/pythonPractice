@@ -90,3 +90,4 @@ write_data_to_db(extract_match_data(request_brawl_matches(MAL_URL),MAL_PLAIN,MAL
 
 
 con.close()
+
