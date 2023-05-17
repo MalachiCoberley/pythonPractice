@@ -5,13 +5,15 @@ def getRandomEncounter(item, luck):
     return encounterOldMan(item, luck)
 
 def encounterOldMan(item, luck):
+    #Sword Advantage
+    #Anything but a pool noodle will beat the encounter, unless you have max luck
     modifier = luck + 0
     print("An old man in a bathrobe emerges from the shadows.")
     print("He wields a can of beans and a newspaper.")
     clearAndContinue()
     if item == "Sword":
         print("Before he can react, you swing your sword, missing him entirely but cleanly opening his can of beans from the top")
-        print("Satisfied, he leaves.")
+        print("Satisfied, he leaves, discarding his newspaper as he goes.")
         return True
     elif item == "Pool Noodle":
         print("'Nice pool noodle, nerd', says the old man. 'Clearly you're not a great listener'.")

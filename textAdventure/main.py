@@ -6,7 +6,6 @@ from adventures import *
 def play():
     life = 3
     luck = random.randint(0,3)
-    backpack = {} #unused at the moment
     print("""Hello adventurer. Choose an item for your quest.
           """)
     item = getStartingItem()
@@ -22,6 +21,7 @@ def play():
         else:
             clearAndContinue()
             print("oh no")
+            life -= 1
     print("Oops, you died")
     
 def getStartingItem():

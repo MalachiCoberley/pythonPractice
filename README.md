@@ -8,9 +8,9 @@ To use this script, you will need to
     - run the brawl_db.py script to initialize/update the db, or use the existing one
     - call brawlstars.py to fetch and download maps, or set up a schedule / cron job to run it regularly. (Currently the BS api only saves the 25 most recent matches, so an hourly job should prevent anything from getting missed)
  
-## gameLearning
-It has the spirit of a text adventure but there isn't a lot to it.
-run gameLearning.py to play it. or maybe play the cliMon one instead.
+## textAdventure
+It has the spirit of a text adventure but there isn't a lot to it. I think I want to remake this with a little more OOP and the probably the bones of D&D
+run textAdventure.py to play it. or maybe play the cliMon one instead.
 
 # cliMon
 A really basic CLI pokemon clone. it's maybe too random to be practical, but it is mostly a game.
